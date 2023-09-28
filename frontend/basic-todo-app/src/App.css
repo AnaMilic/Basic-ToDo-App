@@ -1,38 +1,211 @@
-.App {
-  text-align: center;
+body {
+  padding: 0;
+  margin: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.loginpage{
+width: 350px;
+height: 500px;
+background: red;
+overflow:hidden;
+background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
+border-radius: 10px;
+box-shadow: 5px 20px 50px #000;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#check{
+  display:none;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.registration{
+  position:relative;
+  width:100%;
+  height:100%
+}
+
+label{
+  color:#fff;
+  font-size: 2.3em;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  display: flex;
+  margin: 60px;
+  font-weight:bold;
+  transition: .5s ease-in-out;
+}
+.lgn{
+  margin:0;
+  padding:0;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  min-height:100vh;
+  font-family: 'Jost', sans-serif;
+	background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+}
+input{
+  width:60%;
+  height:20px;
+  background:#e0dede;
+  justify-content: center;
+  display:flex;
+  margin: 20px auto;
+  padding: 10px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+.btn{
+  width: 60%;
+	height: 40px;
+	margin: 10px auto;
+	justify-content: center;
+	display: block;
+	color: #fff;
+	background: #573b8a;
+	font-size: 1em;
+	font-weight: bold;
+	margin-top: 20px;
+	outline: none;
+	border: none;
+	border-radius: 5px;
+	transition: .2s ease-in;
+	cursor: pointer;
+}
+.btn:hover{
+	background: #6d44b8;
+}
+.login{
+  height: 460px;
+	background: #eee;
+	border-radius: 60% / 10%;
+	transform: translateY(-180px);
+	transition: .8s ease-in-out;
+}
+.login label{
+	color: #573b8a;
+	transform: scale(.6);
 }
 
-.App-link {
-  color: #61dafb;
+#check:checked ~ .login{
+	transform: translateY(-500px);
+}
+#check:checked ~ .login label{
+	transform: scale(1);	
+}
+#check:checked ~ .registration label{
+	transform: scale(.6);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.mainPage{
+  width:70%;
+  min-width:50%;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+.heading{
+  display: flex;
+  flex-direction:row;
+  justify-content:center;
+  font-family: sans-serif;
+}
+.headingText{
+  font-size:1.8rem;
+  background-color:antiquewhite;
+  padding:0.8rem 1.7rem;
+  border-radius:0.5rem;
+  margin:1rem;
+  font-family: "Segoe Script";
+}
+.toDoList{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  font-family: sans-serif;
+}
+.column{
+  padding:0.6rem;
+  width:30.5%;
+  min-width:14rem;
+  border-radius:0.3rem;
+  min-height:500px;
+  background:linear-gradient(to bottom, #BAA6A0, #C3B1AC, #CCBCB8);
+  border-radius: 10px;
+  box-shadow: 5px 20px 50px #000;
+  border-top-style:outset;
+  border-top-width: 10px;
+}
+.task{
+  background-color: antiquewhite;
+  margin: 0.2rem 0rem 0.3rem 0rem;
+  border: 0.1rem solid black;
+  border-radius: 0.2rem;
+  padding: 0.5rem 0.2rem 0.5rem 2rem;
+}
+h2{
+  font-family: "Segoe Script";
+  margin-left: 30px;
+}
+.addBtn{
+  display: flex;
+  flex-direction:row;
+  justify-content:center;
+  font-size:1rem;
+  background-color:antiquewhite;
+  padding:0.8rem 1.7rem;
+  border-radius:0.5rem;
+  margin:1rem;
+  font-family: "Segoe Script";
+  width: 200px;
+  position:absolute;
+  top:0;
+  right:0;
+}
+.addModal{
+  display: none;
+  position:fixed;
+  z-index:1;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  overflow:auto;
+  
+}
+.modalContent{
+  color:white;
+  margin: 15% auto;
+  padding:20px;
+  border: 1px solid #BAA6A0;
+  width: 40%;
+  height:50%;
+  background-color:antiquewhite;
+  border-radius: 0.3rem;
+}
+.closeModal{
+  color: #ff5659;
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Segoe Script";
+  margin-top: 3px;
+}
+.closeModal:hover, .closeModal:focus{
+  color:red;
+  text-decoration: none;
+
+}
+.saveBtn{
+  display: flex;
+  flex-direction:row;
+  justify-content:center;
+  font-size:1rem;
+  background-color:#e0dede;
+  padding:0.8rem 1.7rem;
+  border-radius:0.5rem;
+  margin:1rem;
+  font-family: "Segoe Script";
+  border-color: #BAA6A0;
 }
