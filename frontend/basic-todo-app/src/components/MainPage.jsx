@@ -148,11 +148,12 @@ function MainPage() {
         </div>
       </div>
       <button
+        className="logOutBtn"
         onClick={() => {
           navigate("/");
         }}
       >
-        Back to login
+        LOGOUT
       </button>
     </div>
   );
