@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function LogInPage() {
@@ -43,6 +44,46 @@ function LogInPage() {
         alert("Registration is succesfull, now login for access to main page.");
       } else {
         alert(formattedResponse);
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+
+  let login = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      const reqBody = JSON.stringify({
+        user: {
+          email,
+          password,
+        },
+      });
+      if (!reqBody) {
+        return;
+      }
+      let res = await fetch("http://localhost:5050/api/tasks/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: reqBody,
+      });
+      console.log(res.status);
+      const formattedResponse = await res.json();
+      console.log(formattedResponse);
+
+      if (res.status === 200) {
+        setEmail("");
+        setPassword("");
+
+        alert("uspesnooo");
+        navigate("/mainPage");
+      } else {
+        alert(formattedResponse, "Greska pri loginu");
       }
     } catch (error) {
       console.log(error);
@@ -120,7 +161,12 @@ function LogInPage() {
           </form>
         </div>
         <div className="login">
-          <form>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+          >
             <label htmlFor="check" aria-hidden="true">
               Login
             </label>
@@ -133,21 +179,25 @@ function LogInPage() {
             <input
               type="email"
               id="emailL"
+              value={email}
               name="email"
               placeholder="Enter your email"
               required
+              onChange={(e) => setEmail(e.target.value)}
             ></input>
             <input
               type="password"
               id="passL"
+              value={password}
               name="password"
               placeholder="Enter your password"
               required
+              onChange={(e) => setPassword(e.target.value)}
             ></input>
             <button
               className="btn"
-              onClick={() => {
-                navigate("/mainPage");
+              onClick={(event) => {
+                login(event);
               }}
             >
               Login
