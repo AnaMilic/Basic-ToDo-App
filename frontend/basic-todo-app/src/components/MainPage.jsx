@@ -1,8 +1,11 @@
-import React from "react";
+import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function MainPage() {
   const navigate = useNavigate();
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
@@ -16,13 +19,55 @@ function MainPage() {
     //el.target.closest(".column").append(document.getElementById(data));
     ev.currentTarget.appendChild(document.getElementById(data));
   }
-  var modal = document.getElementById("modal");
-  var addModalBtn = document.getElementById("addBtn");
-  var span = document.getElementsByClassName("closeModal")[0];
+  const modal = document.getElementById("modal");
+  //const addModalBtn = document.getElementById("addBtn");
+  //const span = document.getElementsByClassName("closeModal")[0];
 
   window.onclick = function (event) {
     if (event.target === modal) {
       modal.style.display = "none";
+    }
+  };
+
+  let handleSubmit = async (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log("button clickesd");
+    let user = JSON.parse(localStorage.getItem("user-info")).user;
+    console.log(user.user);
+
+    try {
+      const requestBody = JSON.stringify({
+        task: {
+          title,
+          description,
+        },
+        user,
+      });
+      if (!requestBody) {
+        return;
+      }
+      let res = await fetch("http://localhost:5050/api/tasks", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      });
+      const formattedResponse = await res.json();
+      console.log(formattedResponse);
+
+      if (res.status === 200) {
+        setTitle("");
+        setDescription("");
+
+        alert("A new task has been seccessfully added.");
+      } else {
+        alert(formattedResponse);
+      }
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -42,6 +87,7 @@ function MainPage() {
         <button
           className="addBtn"
           onClick={() => {
+            const modal = document.getElementById("modal");
             modal.style.display = "block";
           }}
         >
@@ -52,26 +98,54 @@ function MainPage() {
             <span
               className="closeModal"
               onClick={() => {
+                const modal = document.getElementById("modal");
                 modal.style.display = "none";
               }}
             >
               X
             </span>
 
-            <p>uweigbuqono</p>
-            <form>
+            <p
+              style={{
+                color: "grey",
+                fontFamily: "sans-serif",
+                fontStyle: "italic",
+              }}
+            >
+              Add new task to your list.
+            </p>
+            <form onSubmit={handleSubmit}>
               <input
                 type="text"
                 name="title"
                 placeholder="Enter task title"
+                style={{ marginLeft: "0px", width: "75%" }}
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               ></input>
-              <input
+              <textarea
                 type="text"
                 name="description"
                 placeholder="Enter task description"
-              ></input>
+                style={{
+                  padding: "10px",
+                  backgroundColor: "#e0dede",
+                  border: "none",
+                  broderRadius: "15px",
+                  fontFamily: "sans-serif",
+                  width: "75%",
+                  height: "200px",
+                  resize: "none",
+                  outline: "none",
+                }}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
+              <button type="submit" className="saveBtn">
+                SAVE TASK
+              </button>
             </form>
-            <button className="saveBtn">SAVE TASK</button>
           </div>
         </div>
 
@@ -151,6 +225,7 @@ function MainPage() {
         className="logOutBtn"
         onClick={() => {
           navigate("/");
+          localStorage.removeItem("user-info");
         }}
       >
         LOGOUT

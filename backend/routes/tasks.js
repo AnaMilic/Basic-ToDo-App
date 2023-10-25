@@ -39,4 +39,27 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/", async (req, res) => {
+  const task = req.body.task;
+  const user = req.body.user;
+  const email = req.body.user.email;
+  console.log(task);
+  console.log(user);
+  console.log(email);
+
+  const dbUser = await User.findOne({ email });
+  console.log(dbUser);
+
+  const newTask = new Task({ ...task });
+  newTask.title = task.title;
+  newTask.description = task.description;
+  newTask.userId = dbUser;
+
+  console.log(newTask);
+  newTask
+    .save()
+    .then(() => res.status(200).send(newTask))
+    .catch((error) => res.status(400).send(error));
+});
+
 module.exports = router;
