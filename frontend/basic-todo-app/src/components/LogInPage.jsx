@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function LogInPage() {
@@ -61,6 +60,8 @@ function LogInPage() {
           password,
         },
       });
+      console.log(reqBody);
+      localStorage.setItem("user-info", reqBody);
       if (!reqBody) {
         return;
       }
@@ -90,6 +91,35 @@ function LogInPage() {
       alert(error);
     }
   };
+
+  function checkPasswordStrength(password) {
+    if (password.length > 0 && password.length < 6) {
+      document.getElementById("passwordStrength").style.display = "block";
+      document.getElementById("passwordStrength").textContent = "Weak password";
+      document.getElementById("passwordStrength").style.color = "#ff5659";
+    } else if (
+      password.match(/[a-z]/) &&
+      password.match(/[A-Z]/) &&
+      password.match(/[^a-zA-z0-9]/) &&
+      password.length < 8
+    ) {
+      document.getElementById("passwordStrength").style.display = "block";
+      document.getElementById("passwordStrength").textContent =
+        "Medium password";
+      document.getElementById("passwordStrength").style.color = "#ffff80";
+    } else if (
+      password.match(/[a-z]/) &&
+      password.match(/[A-Z]/) &&
+      password.match(/[0-9]/) &&
+      password.match(/[^a-zA-z0-9]/) &&
+      password.length >= 8
+    ) {
+      document.getElementById("passwordStrength").style.display = "block";
+      document.getElementById("passwordStrength").textContent =
+        "Strong password";
+      document.getElementById("passwordStrength").style.color = "#99ff99";
+    }
+  }
 
   return (
     <div className="lgn">
@@ -128,6 +158,21 @@ function LogInPage() {
               required
               onChange={(e) => setPassword(e.target.value)}
             ></input>
+
+            {checkPasswordStrength(password) || (
+              <label
+                id="passwordStrength"
+                style={{
+                  fontSize: "0.9rem",
+                  fontFamily: "sans-serif",
+                  fontWeight: "normal",
+                  marginLeft: "60px",
+                  marginTop: "0rem",
+                  display: "none",
+                }}
+              ></label>
+            )}
+
             <input
               type="password"
               id="passRCnfrm"
@@ -144,7 +189,7 @@ function LogInPage() {
                   fontSize: "0.9rem",
                   fontFamily: "sans-serif",
                   fontWeight: "normal",
-                  marginLeft: "15px",
+                  marginLeft: "0px",
                   marginTop: "0rem",
                 }}
               >
