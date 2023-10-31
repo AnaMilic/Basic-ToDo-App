@@ -1,11 +1,41 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function MainPage() {
   const navigate = useNavigate();
 
+  const url = "http://localhost:5050/api/tasks/getByEmail";
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  const [tasks, setTasks] = useState([]);
+  const [tasksLength, setTasksLength] = useState(0);
+
+  let [userLogined, setUserLogined] = useState("");
+  userLogined = JSON.parse(localStorage.getItem("user-info")).user;
+
+  const fetchInfo = () => {
+    return axios
+      .get(url, {
+        params: {
+          user: userLogined,
+        },
+      })
+      .then((response) => {
+        setTasks(response.data);
+        setTasksLength(tasks.length);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
+      });
+  };
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
 
   function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
@@ -70,6 +100,11 @@ function MainPage() {
       alert(error);
     }
   };
+
+  function editTask(e) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
 
   return (
     <div
@@ -161,8 +196,33 @@ function MainPage() {
               allowDrop(event);
             }}
           >
-            <h2>to do</h2>
-            <div
+            <h2>to do ({tasks.filter((x) => x.status === "todo").length})</h2>
+            {tasks.map((t) => {
+              if (t.status === "todo")
+                return (
+                  <div
+                    className="task"
+                    id="task1"
+                    draggable="true"
+                    onDragStart={(event) => {
+                      drag(event);
+                    }}
+                  >
+                    <span style={{ fontStyle: "italic" }}>{t.title}</span>{" "}
+                    <br />
+                    <span style={{ marginLeft: "15px" }}>{t.description}</span>
+                    <button
+                      className="editBtn"
+                      onClick={(e) => {
+                        editTask(e);
+                      }}
+                    >
+                      edit task
+                    </button>
+                  </div>
+                );
+            })}
+            {/* <div
               className="task"
               id="task1"
               draggable="true"
@@ -170,7 +230,7 @@ function MainPage() {
                 drag(event);
               }}
             >
-              <span>Task 1</span>
+              <span>Task 1 --- </span>
             </div>
             <div
               className="task"
@@ -180,7 +240,7 @@ function MainPage() {
                 drag(event);
               }}
             >
-              <span>Task 2</span>
+              <span>Task 2 </span>
             </div>
             <div
               className="task"
@@ -190,8 +250,8 @@ function MainPage() {
                 drag(event);
               }}
             >
-              <span>Task 3</span>
-            </div>
+              <span>Task 3 </span>
+            </div> */}
           </div>
           <div
             className="column"
@@ -204,7 +264,24 @@ function MainPage() {
               allowDrop(event);
             }}
           >
-            <h2>doing</h2>
+            <h2>doing ({tasks.filter((x) => x.status === "doing").length})</h2>
+            {tasks.map((t) => {
+              if (t.status === "doing")
+                return (
+                  <div
+                    className="task"
+                    id="task1"
+                    draggable="true"
+                    onDragStart={(event) => {
+                      drag(event);
+                    }}
+                  >
+                    <span style={{ fontStyle: "italic" }}>{t.title}</span>{" "}
+                    <br />
+                    <span style={{ marginLeft: "15px" }}>{t.description}</span>
+                  </div>
+                );
+            })}
           </div>
           <div
             className="column"
@@ -217,7 +294,24 @@ function MainPage() {
               allowDrop(event);
             }}
           >
-            <h2>done</h2>
+            <h2>done ({tasks.filter((x) => x.status === "done").length})</h2>
+            {tasks.map((t) => {
+              if (t.status === "done")
+                return (
+                  <div
+                    className="task"
+                    id="task1"
+                    draggable="true"
+                    onDragStart={(event) => {
+                      drag(event);
+                    }}
+                  >
+                    <span style={{ fontStyle: "italic" }}>{t.title}</span>{" "}
+                    <br />
+                    <span style={{ marginLeft: "15px" }}>{t.description}</span>
+                  </div>
+                );
+            })}
           </div>
         </div>
       </div>

@@ -10,6 +10,26 @@ router.get("/", (req, res) => {
     .catch((error) => res.status(400).json(error));
 });
 
+router.get("/getByEmail", async (req, res) => {
+  const email = req.query.user.email;
+
+  const dbUser = await User.findOne({ email });
+  console.log(dbUser);
+
+  Task.find({
+    userId: dbUser._id,
+  })
+    .exec()
+    .then((task) => {
+      console.log(task);
+      if (!task) {
+        return res.status(400).json("User does not have tasks.");
+      }
+      res.status(200).json(task);
+    })
+    .catch((error) => res.status(400).json(error));
+});
+
 router.post("/login", async (req, res) => {
   try {
     const email = req.body.user.email;
