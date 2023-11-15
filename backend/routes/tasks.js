@@ -82,4 +82,28 @@ router.post("/", async (req, res) => {
     .catch((error) => res.status(400).send(error));
 });
 
+router.patch("/", (req, res) => {
+  //console.log(req.body.task);
+  try {
+    Task.findOneAndUpdate(
+      {
+        _id: req.body.task,
+      },
+      {
+        $set: req.body.task,
+      },
+      {
+        new: true,
+      }
+    )
+      .exec()
+      .then((task) => {
+        res.status(200).send(task);
+      })
+      .catch((err) => res.status(500).send(err));
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
