@@ -154,6 +154,16 @@ function MainPage() {
               onDragStart={(event) => {
                 drag(event);
               }}
+              renderButton={() => (
+                <button
+                  className="editBtn"
+                  onClick={() => {
+                    setEditingTask(t);
+                  }}
+                >
+                  edit task
+                </button>
+              )}
             />
           );
         })}
@@ -177,6 +187,16 @@ function MainPage() {
               onDragStart={(event) => {
                 drag(event);
               }}
+              renderButton={() => (
+                <button
+                  className="editBtn"
+                  onClick={() => {
+                    setEditingTask(t);
+                  }}
+                >
+                  edit task
+                </button>
+              )}
             />
           );
         })}
