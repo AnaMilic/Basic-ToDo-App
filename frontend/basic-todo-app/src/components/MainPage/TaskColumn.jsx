@@ -1,20 +1,21 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
-export default function TaskColumn({
-  borderTopColor,
-  onDrag,
-  onDragOver,
-  children,
-}) {
+const TaskColumn = (
+  { borderTopColor, id, onDrop, onDragOver, children },
+  ref
+) => {
   return (
     <div
+      ref={ref}
       className="column"
-      id="done"
+      id={id}
       style={{ borderTopColor }}
-      onDrop={onDrag}
+      onDrop={onDrop}
       onDragOver={onDragOver}
     >
       {children}
     </div>
   );
-}
+};
+
+export default forwardRef(TaskColumn);

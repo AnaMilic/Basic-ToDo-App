@@ -32,9 +32,10 @@ function AddNewTaskModal({ setTodoTasks, setIsModalVisible }, ref) {
       const formattedResponse = await res.json();
 
       if (res.status === 200) {
+        console.log(formattedResponse);
         setTitle("");
         setDescription("");
-        // setTodoTasks((oldTasks) => [...oldTasks, res.task]);
+        setTodoTasks((oldTasks) => [...oldTasks, formattedResponse]);
 
         alert("A new task has been seccessfully added.");
       } else {

@@ -17,6 +17,7 @@ function EditTaskModal({ task, setEditingTask }, ref) {
         },
       })
       .then((response) => {
+        console.log(response.data);
         alert("Successful change of task.");
       })
       .catch((err) => alert(`Change of task failed. Error: ${err}.`))

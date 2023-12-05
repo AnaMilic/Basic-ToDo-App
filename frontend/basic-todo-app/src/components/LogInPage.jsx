@@ -40,6 +40,7 @@ function LogInPage() {
         setEmail("");
         setPassword("");
         setPasswordConfirm("");
+        document.getElementById("passwordStrength").style.display = "none";
         alert("Registration is succesfull, now login for access to main page.");
       } else {
         alert(formattedResponse);
@@ -80,11 +81,9 @@ function LogInPage() {
       if (res.status === 200) {
         setEmail("");
         setPassword("");
-
-        alert("uspesnooo");
         navigate("/mainPage");
       } else {
-        alert(formattedResponse, "Greska pri loginu");
+        alert(formattedResponse, "Login failed");
       }
     } catch (error) {
       console.log(error);
