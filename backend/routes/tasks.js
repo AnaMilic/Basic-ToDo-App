@@ -21,7 +21,7 @@ router.get("/getByEmail", async (req, res) => {
   })
     .exec()
     .then((task) => {
-      console.log(task);
+      //console.log(task);
       if (!task) {
         return res.status(400).json("User does not have tasks.");
       }
@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
 });
 
 router.patch("/", (req, res) => {
-  //console.log(req.body.task);
+  console.log(req.body.task);
   try {
     Task.findOneAndUpdate(
       {
@@ -104,6 +104,21 @@ router.patch("/", (req, res) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+router.delete("/", (req, res) => {
+  //console.log(req.query._id);
+  const t = req.query;
+  Task.findOneAndRemove({
+    _id: req.query._id,
+  })
+    .then((task) => {
+      return res.status(200).json(task);
+    })
+    .catch((err) => {
+      //console.log(err);
+      return res.status(400).send(err);
+    });
 });
 
 module.exports = router;

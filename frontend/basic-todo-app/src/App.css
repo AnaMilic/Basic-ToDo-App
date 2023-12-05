@@ -155,7 +155,7 @@ input{
   margin: 0.2rem 0rem 0.3rem 0rem;
   border: 0.1rem solid black;
   border-radius: 0.2rem;
-  padding: 0.5rem 0.2rem 0.5rem 2rem;
+  padding: 0.5rem 1rem 0.5rem 2rem;
   position:relative
 }
 h2{
@@ -249,9 +249,22 @@ h2{
   border-color: #C3B1AC;
   background-color: #CCBCB8;
   font-family: "Segoe Script";
-  
+  width:90px;
 
   position:relative;
   bottom:1px;
-  left:100px
+  left:90px
+}
+.deleteBtn{
+  display: flex;
+  flex-direction:row;
+  justify-content:center;
+  border-radius: 0.5rem;
+  border-color: #C3B1AC;
+  background-color: #CCBCB8;
+  font-family: "Segoe Script";
+  position:relative;
+  left:90px;
+  border-color: #ff5659;
+  margin-top: 0.2rem;
 }

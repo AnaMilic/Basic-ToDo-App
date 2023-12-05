@@ -19,12 +19,18 @@ function MainPage() {
   const [doingTasks, setDoingTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState([]);
 
+  const todoColRef = useRef();
+  const doingColRef = useRef();
+  const doneColRef = useRef();
+
   const [editingTask, setEditingTask] = useState(null);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
 
   let [userLogined, setUserLogined] = useState(
     JSON.parse(localStorage.getItem("user-info")).user
   );
+
+  let tsk = [...todoTasks, ...doingTasks, ...doneTasks];
 
   const editModalRef = useRef(null);
   const addModalRef = useRef(null);
@@ -78,8 +84,142 @@ function MainPage() {
   function drop(ev) {
     ev.preventDefault();
     let data = ev.dataTransfer.getData("text");
-    console.log({ ev, data });
-    ev.currentTarget.appendChild(document.getElementById(data));
+
+    let t = tsk.find((i) => i._id === data);
+
+    let status = "";
+    const oldStatus = t.status;
+
+    if (todoColRef.current.contains(ev.target)) {
+      status = "todo";
+    }
+    if (doingColRef.current.contains(ev.target)) {
+      status = "doing";
+    }
+    if (doneColRef.current.contains(ev.target)) {
+      status = "done";
+    }
+
+    if (oldStatus === status || status === "") {
+      return;
+    }
+
+    switch (oldStatus) {
+      case "todo":
+        setTodoTasks((old) => [...old.filter((oldT) => oldT._id !== t._id)]);
+        break;
+      case "doing":
+        setDoingTasks((old) => [...old.filter((oldT) => oldT._id !== t._id)]);
+        break;
+      case "done":
+        setDoneTasks((old) => [...old.filter((oldT) => oldT._id !== t._id)]);
+        break;
+
+      default:
+        break;
+    }
+
+    switch (status) {
+      case "todo":
+        setTodoTasks((old) => [...old, t]);
+        break;
+      case "doing":
+        setDoingTasks((old) => [...old, t]);
+        break;
+      case "done":
+        setDoneTasks((old) => [...old, t]);
+        break;
+
+      default:
+        break;
+    }
+
+    editTaskStatus(ev, t, status);
+  }
+
+  function editTaskStatus(e, task, status) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    return axios
+      .patch("http://localhost:5050/api/tasks", {
+        task: {
+          ...task,
+          status,
+        },
+      })
+      .then((response) => {
+        const updatedTask = response.data;
+        switch (updatedTask.status) {
+          case "todo":
+            setTodoTasks((old) => {
+              const filteredOld = old.filter((oldT) => oldT._id !== task._id);
+              return [...filteredOld, updatedTask];
+            });
+            break;
+          case "doing":
+            setDoingTasks((old) => {
+              const filteredOld = old.filter((oldT) => oldT._id !== task._id);
+              return [...filteredOld, updatedTask];
+            });
+            break;
+          case "done":
+            setDoneTasks((old) => {
+              const filteredOld = old.filter((oldT) => oldT._id !== task._id);
+              return [...filteredOld, updatedTask];
+            });
+            break;
+
+          default:
+            break;
+        }
+        //alert("Successful change of task.");
+      })
+      .catch((err) => alert(`Change of task status failed. Error: ${err}.`))
+      .finally(() => setEditingTask(null));
+  }
+
+  function deleteTask(t, e) {
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      axios
+        .delete("http://localhost:5050/api/tasks", {
+          params: t,
+        })
+        .then((response) => {
+          const deletedTask = response.data;
+          switch (deletedTask.status) {
+            case "todo":
+              setTodoTasks((old) => {
+                const filteredOld = old.filter((oldT) => oldT._id !== t._id);
+                return [...filteredOld];
+              });
+              break;
+            case "doing":
+              setDoingTasks((old) => {
+                const filteredOld = old.filter((oldT) => oldT._id !== t._id);
+                return [...filteredOld];
+              });
+              break;
+            case "done":
+              setDoneTasks((old) => {
+                const filteredOld = old.filter((oldT) => oldT._id !== t._id);
+                return [...filteredOld];
+              });
+              break;
+
+            default:
+              break;
+          }
+          alert("Successfully deleted task.");
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -102,6 +242,8 @@ function MainPage() {
   const renderTable = () => (
     <div className="toDoList">
       <TaskColumn
+        ref={todoColRef}
+        id="colToDo"
         borderTopColor="#ff5659"
         onDrop={(event) => {
           drop(event);
@@ -131,12 +273,31 @@ function MainPage() {
                   edit task
                 </button>
               )}
+              deleteButton={() => (
+                <button
+                  className="deleteBtn"
+                  onClick={(e) => {
+                    if (
+                      // eslint-disable-next-line no-restricted-globals
+                      !confirm("Are you sure you want to delete this task?")
+                    ) {
+                      return;
+                    } else {
+                      deleteTask(t, e);
+                    }
+                  }}
+                >
+                  delete task
+                </button>
+              )}
             />
           );
         })}
       </TaskColumn>
       <TaskColumn
+        ref={doingColRef}
         borderTopColor="#ffff80"
+        id="colDoing"
         onDrop={(event) => {
           drop(event);
         }}
@@ -164,12 +325,31 @@ function MainPage() {
                   edit task
                 </button>
               )}
+              deleteButton={() => (
+                <button
+                  className="deleteBtn"
+                  onClick={(e) => {
+                    if (
+                      // eslint-disable-next-line no-restricted-globals
+                      !confirm("Are you sure you want to delete this task?")
+                    ) {
+                      return;
+                    } else {
+                      deleteTask(t, e);
+                    }
+                  }}
+                >
+                  delete task
+                </button>
+              )}
             />
           );
         })}
       </TaskColumn>
       <TaskColumn
+        ref={doneColRef}
         borderTopColor="#99ff99"
+        id="colDone"
         onDrop={(event) => {
           drop(event);
         }}
@@ -195,6 +375,23 @@ function MainPage() {
                   }}
                 >
                   edit task
+                </button>
+              )}
+              deleteButton={() => (
+                <button
+                  className="deleteBtn"
+                  onClick={(e) => {
+                    if (
+                      // eslint-disable-next-line no-restricted-globals
+                      !confirm("Are you sure you want to delete this task?")
+                    ) {
+                      return;
+                    } else {
+                      deleteTask(t, e);
+                    }
+                  }}
+                >
+                  delete task
                 </button>
               )}
             />
