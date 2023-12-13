@@ -12,9 +12,6 @@ function MainPage() {
 
   const url = "http://localhost:5050/api/tasks/getByEmail";
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-
   const [todoTasks, setTodoTasks] = useState([]);
   const [doingTasks, setDoingTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState([]);
